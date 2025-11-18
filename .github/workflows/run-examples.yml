@@ -1,0 +1,23 @@
+name: Run Examples
+
+on: 
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron:  '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - name: Project set-up
+        run: |
+          uv venv
+          uv sync
+          uv sync --extra ingress-torch-cpu
+      - name: Run MLP From File
+        run: uv run python/examples/ingress/torch/mlp_from_file.py
+      - name: Run MLP From Module
+        run: uv run python/examples/ingress/torch/mlp_from_model.py
